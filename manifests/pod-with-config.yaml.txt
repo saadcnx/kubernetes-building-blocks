@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-database-pod
+spec:
+  containers:
+  - name: mysql
+    image: mysql:8.0
+    ports:
+    - containerPort: 3306
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "rootpassword"
+    - name: MYSQL_DATABASE
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: database_name
+    - name: MYSQL_TCP_PORT
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: database_port
+    args: ["--max-connections=$(max_connections)"]
+    envFrom:
+    - configMapRef:
+        name: app-config
